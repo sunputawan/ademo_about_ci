@@ -31,25 +31,12 @@ jobs:
       - name: Deploy to Vercel (Production)
         if: github.event_name == 'push'
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}     # user_... or team_...
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # prj_...
-          VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}       # slug: testorg or your username
+            VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+            VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+            VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          npm i -g vercel
-
-          # --- diagnostics (safe; secrets will be masked) ---
-          vercel whoami --token="$VERCEL_TOKEN" --scope="$VERCEL_SCOPE"
-          vercel projects ls --token="$VERCEL_TOKEN" --scope="$VERCEL_SCOPE"
-
-          # --- make project link explicit ---
-          vercel pull --yes --environment=production \
-            --token="$VERCEL_TOKEN" \
-            --project="$VERCEL_PROJECT_ID" \
-            --scope="$VERCEL_SCOPE"
-
-          # build & deploy prebuilt
-          npm run build
-          vercel deploy --prebuilt --prod \
-            --token="$VERCEL_TOKEN" \
-            --scope="$VERCEL_SCOPE"
+            echo "Using PROJECT_ID=$VERCEL_PROJECT_ID and ORG_ID=$VERCEL_ORG_ID"
+            npm install --global vercel
+            vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+            vercel build --prod --token=$VERCEL_TOKEN
+            vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
