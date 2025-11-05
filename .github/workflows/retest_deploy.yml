@@ -27,11 +27,6 @@ jobs:
 
       - name: Run Vitest
         run: npx vitest run
-      - name: Verify Vercel auth/scope
-        run: |
-            npm i -g vercel
-            vercel whoami --token=$VERCEL_TOKEN
-
 
       - name: Deploy to Vercel (Production)
         if: github.event_name == 'push'
